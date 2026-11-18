@@ -3,19 +3,21 @@
  */
 package edu.curso;
 
-import org.kordamp.ikonli.javafx.FontIcon;
-
 import javafx.application.Application;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
-import javafx.scene.control.Label;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.GridPane;
-import javafx.scene.layout.VBox;
 import javafx.scene.layout.HBox;
+import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.stage.Stage;
+import javafx.scene.control.Label;
+
+import org.kordamp.ikonli.javafx.FontIcon;
+
+import edu.curso.View.*;
 
 public class App extends Application {
 
@@ -37,6 +39,8 @@ public class App extends Application {
         }
 
         public BorderPane telaPrincipal() {
+                inicialView inicialView = new inicialView();
+                AtendimentoView atendView = new AtendimentoView();
                 BorderPane pai = new BorderPane();
 
                 // ===================== cabecalho ==========================
@@ -50,21 +54,15 @@ public class App extends Application {
                 clinicaIcon.setIconColor(Color.LIGHTBLUE);
 
                 Label subTitle = new Label("Sistema de Gestão Clínica");
-                subTitle.setStyle(
-                                "-fx-font-family: 'Arial';" +
-                                                "-fx-font-size: 16px;" +
-                                                "-fx-font-weight: semi-bold;" +
-                                                "-fx-text-fill: #FFFFFF;");
+                subTitle.setStyle("-fx-font-family: 'Arial';" + "-fx-font-size: 16px;" + "-fx-font-weight: semi-bold;"
+                                + "-fx-text-fill: #FFFFFF;");
 
                 Label title = new Label("Painel administrativo");
-                title.setStyle("-fx-font-family: 'Arial';" +
-                                "-fx-font-size: 10px;" +
-                                "-fx-text-fill: #FFFFFF;");
-                                
-                
+                title.setStyle("-fx-font-family: 'Arial';" + "-fx-font-size: 10px;" + "-fx-text-fill: #FFFFFF;");
+
                 HBox hbox = new HBox(10, clinicaIcon, subTitle);
                 hbox.setAlignment(Pos.CENTER_LEFT);
-                HBox.setMargin(clinicaIcon, new Insets(0,10,0,0));
+                HBox.setMargin(clinicaIcon, new Insets(0, 10, 0, 0));
                 cabecalho.setLeft(hbox);
                 BorderPane.setMargin(hbox, new Insets(0, 0, 0, 10));
                 BorderPane.setAlignment(hbox, Pos.CENTER_LEFT);
@@ -73,70 +71,59 @@ public class App extends Application {
                 BorderPane.setMargin(title, new Insets(0, 20, 0, 0));
                 BorderPane.setAlignment(title, Pos.CENTER_RIGHT);
 
-                pai.setTop(cabecalho);
-
                 // ==================== FIM cabecalho ======================
-
+                pai.setTop(cabecalho);
                 // ======================= DRAWER ===========================
 
-                // ----- Pane -----
+                // ----- Instancias -----
                 BorderPane drawer = new BorderPane();
                 GridPane gridPane = new GridPane();
                 VBox vbox = new VBox();
+                HBox hboxDrawer = new HBox();
+                FontIcon atendimentoIcon = new FontIcon("fas-calendar-alt");
+                FontIcon pacienteIcon = new FontIcon("fas-users");
+                FontIcon medicoIcon = new FontIcon("fas-user-md");
+                FontIcon inicioIcon = new FontIcon("fas-home");
+                Label txtDrawerAtendimentos = new Label("Atendimentos");
+                Label txtInicio = new Label("Inicio");
+                Label txtDrawerMedico = new Label("Medicos");
+                Label txtDrawerPaciente = new Label("Pacientes");
 
-                drawer.setCenter(gridPane);
+                // ----- Style -----
 
                 BorderPane.setMargin(gridPane, new Insets(20, 0, 0, 10));
 
                 vbox.setPrefSize(200, 1000);
                 vbox.setStyle("-fx-background-color: #0b3666;");
 
-                // ------ Icon ----------
-                FontIcon pacienteIcon = new FontIcon("fas-users");
+                gridPane.setVgap(10);
+                gridPane.setHgap(10);
+
                 pacienteIcon.setIconSize(14);
                 pacienteIcon.setIconColor(Color.web("#FFFFFF"));
 
-                FontIcon atendimentoIcon = new FontIcon("fas-calendar-alt");
                 atendimentoIcon.setIconSize(14);
                 atendimentoIcon.setIconColor(Color.web("#FFFFFF"));
 
-                FontIcon medicoIcon = new FontIcon("fas-user-md");
                 medicoIcon.setIconSize(14);
                 medicoIcon.setIconColor(Color.web("#FFFFFF"));
 
-                FontIcon inicioIcon = new FontIcon("fas-home");
                 inicioIcon.setIconSize(14);
                 inicioIcon.setIconColor(Color.web("#FFFFFF"));
 
-                Label txtInicio = new Label("Inicio");
-                txtInicio.setStyle(
-                                "-fx-font-style: Arial;" +
-                                                "-fx-font-size: 18px;" +
-                                                "-fx-text-fill: #FFFFFF");
+                txtInicio.setStyle("-fx-font-style: Arial;" + "-fx-font-size: 18px;" + "-fx-text-fill: #FFFFFF");
 
-                Label txtDrawerMedico = new Label("Medicos");
-                txtDrawerMedico.setStyle(
-                                "-fx-font-style: Arial;" +
-                                                "-fx-font-size: 18px;" +
-                                                "-fx-text-fill: #FFFFFF"
+                txtDrawerMedico.setStyle("-fx-font-style: Arial;" + "-fx-font-size: 18px;" + "-fx-text-fill: #FFFFFF");
 
-                );
+                txtDrawerPaciente
+                                .setStyle("-fx-font-style: Arial;" + "-fx-font-size: 18px;" + "-fx-text-fill: #FFFFFF");
 
-                Label txtDrawerPaciente = new Label("Pacientes");
-                txtDrawerPaciente.setStyle(
-                                "-fx-font-style: Arial;" +
-                                                "-fx-font-size: 18px;" +
-                                                "-fx-text-fill: #FFFFFF"
+                txtDrawerAtendimentos
+                                .setStyle("-fx-font-style: Arial;" + "-fx-font-size: 18px;" + "-fx-text-fill: #FFFFFF");
 
-                );
+                // ------ Injecao ----------
 
-                Label txtDrawerAtendimentos = new Label("Atendimentos");
-                txtDrawerAtendimentos.setStyle(
-                                "-fx-font-style: Arial;" +
-                                                "-fx-font-size: 18px;" +
-                                                "-fx-text-fill: #FFFFFF"
-
-                );
+                drawer.setCenter(gridPane);
 
                 gridPane.add(inicioIcon, 0, 0);
                 gridPane.add(txtInicio, 1, 0);
@@ -150,47 +137,22 @@ public class App extends Application {
                 gridPane.add(atendimentoIcon, 0, 3);
                 gridPane.add(txtDrawerAtendimentos, 1, 3);
 
-                gridPane.setVgap(10);
-                gridPane.setHgap(10);
+                txtDrawerAtendimentos.setOnMouseClicked(event -> {
+                        pai.setCenter(atendView.centralPane());
+                });
+
+                txtInicio.setOnMouseClicked(event -> {
+                        pai.setCenter(inicialView.centralPane());
+                });
 
                 vbox.getChildren().add(drawer);
 
-                pai.setLeft(vbox);
                 // ====================== FIM DRAWER ==========================
+                pai.setLeft(vbox);
+                // ====================== Center ==========================
 
-                // ====================== Body ==========================
-                
-                VBox vboxCenter = new VBox();
-                vboxCenter.setStyle("-fx-background-color: #141414");
-
-                Label h2 = new Label("Visão geral");
-                h2.setStyle(
-                        "-fx-font-family: Segoe UI;" +
-                        "-fx-font-size: 60px;" +
-                        "-fx-font-weight: bold;"  +
-                        "-fx-text-fill: #ffffff;"
-                );
-                
-                VBox.setMargin(h2, new Insets(10,0,0,20));
-                vboxCenter.getChildren().add(h2);
-
-
-                Label h3 = new Label("Bem-vindo ao sistema de gestão da clínica.");
-                h3.setStyle(
-                        "-fx-font-family: Segoe UI;" +
-                        "-fx-font-size: 18px;" +
-                        "-fx-text-fill: #b3b3b3;"
-                );
-
-                VBox.setMargin(h3, new Insets(10,0,0,20));
-                vboxCenter.getChildren().add(h3);
-
-
-
-
-                pai.setCenter(vboxCenter);
-
-                // ====================== Fim Body ==========================
+                // ====================== Fim Center ==========================
+                pai.setCenter(inicialView.centralPane());
 
                 return pai;
         }

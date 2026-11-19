@@ -49,6 +49,14 @@ public class Atendimento {
         this.data = data;
     }
 
+    public Medico getMedico(){
+        return m;
+    }
+
+    public Paciente getPaciente(){
+        return p;
+    }
+
     @Override
     public String toString(){
         return String.format("O Atendimento %d \n Data: %s \n Medico: %s \n Paciente: %s", id, data, m.getNome(), p.getNome());

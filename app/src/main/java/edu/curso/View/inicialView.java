@@ -10,7 +10,6 @@ import javafx.scene.paint.Color;
 
 public class inicialView {
     public VBox centralPane(){
-        
                 // ------ Instancia ----------
 
                 VBox vboxCenter = new VBox();

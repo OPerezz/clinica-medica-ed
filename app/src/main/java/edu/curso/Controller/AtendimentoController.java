@@ -5,8 +5,13 @@ import java.util.ArrayList;
 import java.util.Scanner;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import javafx.beans.property.StringProperty;
+import javafx.beans.property.SimpleStringProperty;
+import javafx.beans.property.SimpleLongProperty;
+import javafx.beans.property.LongProperty;
 
-public class AtedimentoController {
+
+public class AtendimentoController {
     private Scanner ler = new Scanner(System.in);
     private PacienteController pc;
     private MedicoController mc;
@@ -14,7 +19,14 @@ public class AtedimentoController {
     private ArrayList<Atendimento> list = new ArrayList<>();
     private DateTimeFormatter formato = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm");
 
-    public AtedimentoController(PacienteController pc, MedicoController mc){
+    private LongProperty id = new SimpleLongProperty(0);
+    private StringProperty data = new SimpleStringProperty("");
+    private LongProperty medicoId = new SimpleLongProperty(0);
+    private LongProperty pacienteId = new SimpleLongProperty(0);
+
+    public AtendimentoController(){}
+
+    public AtendimentoController(PacienteController pc, MedicoController mc){
         this.pc = pc;
         this.mc = mc;
     }
@@ -27,22 +39,21 @@ public class AtedimentoController {
 
         list.add(a);
 
+        for(Atendimento atendimento :  list){
+            System.out.println(a);
+        }
+
         count++;
     }
 
     public void preencherDados(Atendimento a) {
-        System.out.println("Insira a data a ser agendada");
-        String data = ler.nextLine();
-
-        LocalDateTime dataLDT = LocalDateTime.parse(data, formato);
-
-        a.setData(dataLDT);
+        a.setData(LocalDateTime.parse(data.get(), formato));
 
         System.out.println("Insira o ID do paciente");
-        a.setP(pc.procurar(ler.nextLong()));
+        a.setP(pc.procurar(medicoId.get()));
 
         System.out.println("Insira o id do Medico");
-        a.setM(mc.procurar(ler.nextLong()));
+        a.setM(mc.procurar(pacienteId.get()));
     }
 
     public void listar() {
@@ -111,5 +122,22 @@ public class AtedimentoController {
     public Boolean confirmar() {
         System.out.println("Deseja Realmente realizar essa Operação ? Digite 'SIM' para confirmar");
         return ler.nextLine().equalsIgnoreCase("SIM");
+    }
+
+    public LongProperty idProperty(){
+        return id;
+    }
+
+
+    public StringProperty dataProperty(){
+        return data;
+    }
+
+    public LongProperty medicoIdProperty(){
+        return medicoId;
+    }
+
+    public LongProperty pacienteIdProperty(){
+        return pacienteId;
     }
 }

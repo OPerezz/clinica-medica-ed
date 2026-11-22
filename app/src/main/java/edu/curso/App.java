@@ -13,6 +13,7 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.stage.Stage;
+import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 
 import org.kordamp.ikonli.javafx.FontIcon;
@@ -41,6 +42,8 @@ public class App extends Application {
         public BorderPane telaPrincipal() {
                 inicialView inicialView = new inicialView();
                 AtendimentoView atendView = new AtendimentoView();
+                PacienteView pacienteView = new PacienteView();
+                MedicoView medicoView = new MedicoView();
                 BorderPane pai = new BorderPane();
 
                 // ===================== cabecalho ==========================
@@ -122,6 +125,7 @@ public class App extends Application {
                                 .setStyle("-fx-font-style: Arial;" + "-fx-font-size: 18px;" + "-fx-text-fill: #FFFFFF");
 
                 // ------ Injecao ----------
+                
 
                 drawer.setCenter(gridPane);
 
@@ -141,7 +145,12 @@ public class App extends Application {
                         pai.setCenter(atendView.centralPane());
                 });
 
+                txtDrawerPaciente.setOnMouseClicked(event -> {
+                        pai.setCenter(pacienteView.centralPane());
+                });
+
                 txtInicio.setOnMouseClicked(event -> {
+                        pai.setCenter(null);
                         pai.setCenter(inicialView.centralPane());
                 });
 

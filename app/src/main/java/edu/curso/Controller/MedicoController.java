@@ -1,10 +1,9 @@
 package edu.curso.Controller;
 
-import edu.curso.Entity.Medico;
-
 import java.util.ArrayList;
-import java.time.LocalDateTime;
 import java.util.Scanner;
+
+import edu.curso.Entity.Medico;
 
 public class MedicoController {
     private int count = 0;
@@ -114,9 +113,5 @@ public class MedicoController {
         System.out.println("Deseja Prosseguir com a Operação ?");
 
         return ler.nextLine().equalsIgnoreCase("SIM");
-    }
-
-    public LongProperty idProperty(){
-        return id;
     }
 }

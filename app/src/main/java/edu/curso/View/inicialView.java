@@ -4,18 +4,24 @@ import org.kordamp.ikonli.javafx.FontIcon;
 
 import javafx.geometry.Insets;
 import javafx.scene.control.Label;
-import javafx.scene.layout.VBox;
+import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
+import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 
+
 public class inicialView {
-    public VBox centralPane(){
+    public VBox centralPane(BorderPane pai){
                 // ------ Instancia ----------
 
                 VBox vboxCenter = new VBox();
                 HBox hboxCard = new HBox(20);
                 Label h2 = new Label("Visão geral");
                 Label h3 = new Label("Bem-vindo ao sistema de gestão da clínica.");
+
+                AtendimentoView atendView = new AtendimentoView();
+                MedicoView medicoView = new MedicoView();
+                PacienteView pacienteView = new PacienteView();
 
                 // ---------- Variaveis --------
 
@@ -37,6 +43,12 @@ public class inicialView {
                                 "Agendar e gerenciar atendimentos"
                 };
 
+                BorderPane[] linkCardStrings = {
+                                pacienteView.centralPane(),
+                                medicoView.centralPane(),
+                                atendView.centralPane()
+                };
+
                 // ------ Injecao ----------
 
                 vboxCenter.getChildren().add(h2);
@@ -44,6 +56,7 @@ public class inicialView {
                 vboxCenter.getChildren().add(hboxCard);
 
                 for (int i = 0; i < iconesCards.length; i++) {
+                        final int index = i;
                         VBox card = new VBox(10);
 
                         FontIcon iconeCard = new FontIcon(iconesCards[i]);
@@ -65,6 +78,10 @@ public class inicialView {
                                         "-fx-font-family: Arial;" + "-fx-font-size: 16px;" + "-fx-text-fill: #a8a8a8");
 
                         card.setPadding(new Insets(20));
+
+                        card.setOnMouseClicked(event -> {
+                            pai.setCenter(linkCardStrings[index]);
+                        });
                 }
 
                 // ------ Style ----------

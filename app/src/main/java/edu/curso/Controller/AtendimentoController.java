@@ -1,14 +1,15 @@
 package edu.curso.Controller;
 
-import edu.curso.Entity.*;
-import java.util.ArrayList;
-import java.util.Scanner;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-import javafx.beans.property.StringProperty;
-import javafx.beans.property.SimpleStringProperty;
-import javafx.beans.property.SimpleLongProperty;
+import java.util.ArrayList;
+import java.util.Scanner;
+
+import edu.curso.Entity.Atendimento;
 import javafx.beans.property.LongProperty;
+import javafx.beans.property.SimpleLongProperty;
+import javafx.beans.property.SimpleStringProperty;
+import javafx.beans.property.StringProperty;
 
 
 public class AtendimentoController {
@@ -49,8 +50,7 @@ public class AtendimentoController {
     public void preencherDados(Atendimento a) {
         a.setData(LocalDateTime.parse(data.get(), formato));
 
-        System.out.println("Insira o ID do paciente");
-        a.setP(pc.procurar(medicoId.get()));
+        
 
         System.out.println("Insira o id do Medico");
         a.setM(mc.procurar(pacienteId.get()));

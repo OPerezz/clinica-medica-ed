@@ -3,22 +3,23 @@
  */
 package edu.curso;
 
+import org.kordamp.ikonli.javafx.FontIcon;
+
+import edu.curso.View.AtendimentoView;
+import edu.curso.View.MedicoView;
+import edu.curso.View.PacienteView;
+import edu.curso.View.inicialView;
 import javafx.application.Application;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
+import javafx.scene.control.Label;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.stage.Stage;
-import javafx.scene.control.Button;
-import javafx.scene.control.Label;
-
-import org.kordamp.ikonli.javafx.FontIcon;
-
-import edu.curso.View.*;
 
 public class App extends Application {
 
@@ -28,7 +29,7 @@ public class App extends Application {
 
         @Override
         public void start(Stage stage) throws Exception {
-                Scene scene = new Scene(telaPrincipal(), 1000, 800);
+                Scene scene = new Scene(telaPrincipal(), 1400, 1000);
 
                 stage.setTitle("Clinica Médica");
                 stage.setScene(scene);
@@ -151,7 +152,7 @@ public class App extends Application {
 
                 txtInicio.setOnMouseClicked(event -> {
                         pai.setCenter(null);
-                        pai.setCenter(inicialView.centralPane());
+                        pai.setCenter(inicialView.centralPane(pai));
                 });
 
                 vbox.getChildren().add(drawer);
@@ -161,7 +162,7 @@ public class App extends Application {
                 // ====================== Center ==========================
 
                 // ====================== Fim Center ==========================
-                pai.setCenter(inicialView.centralPane());
+                pai.setCenter(inicialView.centralPane(pai));
 
                 return pai;
         }

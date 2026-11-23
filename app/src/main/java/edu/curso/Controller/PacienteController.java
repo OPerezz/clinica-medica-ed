@@ -4,11 +4,26 @@ import java.util.ArrayList;
 import java.util.Scanner;
 
 import edu.curso.Entity.Paciente;
+import javafx.beans.property.IntegerProperty;
+import javafx.beans.property.LongProperty;
+import javafx.beans.property.SimpleIntegerProperty;
+import javafx.beans.property.SimpleLongProperty;
+import javafx.beans.property.SimpleStringProperty;
+import javafx.beans.property.StringProperty;
 
 public class PacienteController {
     private long count = 0;
     private ArrayList<Paciente> list = new ArrayList<>();
     private Scanner ler = new Scanner(System.in);
+
+    private LongProperty id = new SimpleLongProperty(0);
+    private StringProperty nome = new SimpleStringProperty("");
+    private StringProperty email = new SimpleStringProperty("");
+    private StringProperty cpf= new SimpleStringProperty("");
+    private IntegerProperty idade = new SimpleIntegerProperty(0);
+    private StringProperty endereco = new SimpleStringProperty("");
+    private StringProperty problema = new SimpleStringProperty("");
+
 
     public void criar() {
         Paciente p = new Paciente();
@@ -120,5 +135,34 @@ public class PacienteController {
         }   else{
             System.out.println("Operação Cancelada");
         }
+    }
+
+    
+    public LongProperty idProperty(){
+        return id;
+    }
+
+    public StringProperty nomeProperty(){
+        return nome;
+    }
+
+    public StringProperty emailProperty(){
+        return email;
+    }
+
+    public StringProperty cpfProperty(){
+        return cpf;
+    }
+
+    public IntegerProperty idadeProperty(){
+        return idade;
+    }
+
+    public StringProperty enderecoProperty(){
+        return endereco;
+    }
+
+    public StringProperty problemaProperty(){
+        return problema;
     }
 }

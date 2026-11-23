@@ -115,4 +115,8 @@ public class MedicoController {
 
         return ler.nextLine().equalsIgnoreCase("SIM");
     }
+
+    public LongProperty idProperty(){
+        return id;
+    }
 }

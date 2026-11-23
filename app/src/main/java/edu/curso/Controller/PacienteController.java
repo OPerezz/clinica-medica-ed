@@ -2,6 +2,8 @@ package edu.curso.Controller;
 
 import java.util.Scanner;
 
+import edu.curso.DAO.PacienteDAO;
+import edu.curso.DAO.PacienteDAOImp;
 import edu.curso.Entity.Paciente;
 import javafx.beans.property.IntegerProperty;
 import javafx.beans.property.LongProperty;
@@ -17,6 +19,7 @@ public class PacienteController {
     private ObservableList<Paciente> list = FXCollections.observableArrayList();
     private Scanner ler = new Scanner(System.in);
     private int i = 0;
+    private PacienteDAO dao = new PacienteDAOImp();
 
     private LongProperty id = new SimpleLongProperty();
     private StringProperty nome = new SimpleStringProperty("");
@@ -31,7 +34,6 @@ public class PacienteController {
     public Boolean criar() {
         Paciente p = new Paciente();
 
-        p.setId(count);
         p.setNome(nome.get());
         p.setEmail(email.get());
         p.setCpf(cpf.get());
@@ -39,9 +41,8 @@ public class PacienteController {
         p.setEndereco(endereco.get());
         p.setProblema(problema.get());
 
-        list.add(p);
+        dao.criar(p);
 
-        count = count + 1;
         limparDados();
         return true;
     }

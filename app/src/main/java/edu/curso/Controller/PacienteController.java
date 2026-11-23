@@ -42,7 +42,7 @@ public class PacienteController {
         p.setProblema(problema.get());
 
         dao.criar(p);
-
+        list.add(p);
         limparDados();
         return true;
     }

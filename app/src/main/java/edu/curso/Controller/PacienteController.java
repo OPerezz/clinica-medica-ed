@@ -3,7 +3,7 @@ package edu.curso.Controller;
 import java.util.Scanner;
 
 import edu.curso.DAO.PacienteDAO;
-import edu.curso.DAO.PacienteDAOImp;
+import edu.curso.DAOImp.PacienteDAOImp;
 import edu.curso.Entity.Paciente;
 import javafx.beans.property.IntegerProperty;
 import javafx.beans.property.LongProperty;
@@ -125,31 +125,24 @@ public class PacienteController {
     public LongProperty idProperty(){
         return id;
     }
-
     public StringProperty nomeProperty(){
         return nome;
     }
-
     public StringProperty emailProperty(){
         return email;
     }
-
     public LongProperty cpfProperty(){
         return cpf;
     }
-
     public IntegerProperty idadeProperty(){
         return idade;
     }
-
     public StringProperty enderecoProperty(){
         return endereco;
     }
-
     public StringProperty problemaProperty(){
         return problema;
     }
-
     public ObservableList<Paciente> getLista() {
         return list;
     }

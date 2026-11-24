@@ -1,29 +1,19 @@
-package edu.curso.DAO;
+package edu.curso.DAOImp;
 
 import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
+import edu.curso.DAO.PacienteDAO;
 import edu.curso.Entity.Paciente;
 
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
-
 public class PacienteDAOImp implements PacienteDAO {
-    private Connection con;
+    //Separei a conexao do banco a uma classe separada, para que caso seja necessário mudar o banco de dados, não seja necessário alterar todas as classes DAO
+    private Connection con = edu.curso.DAOImp.Conexao.con(); 
 
-    public PacienteDAOImp(){
-        try{
-            Class.forName("org.mariadb.jdbc.Driver");
-            con  = DriverManager.getConnection("jdbc:mariadb://localhost/clinica", "root", "admin1234");
-        } catch (ClassNotFoundException e) {
-                System.out.println("Classe Maria DB não encontrada");
-        } catch (SQLException e) { 
-                System.out.println("Erro ao conectar no banco de dados");
-            }
-    }
+    public PacienteDAOImp(){}
 
     @Override
     public Paciente criar(Paciente p){

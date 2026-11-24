@@ -3,6 +3,7 @@
  */
 package edu.curso;
 
+
 import org.kordamp.ikonli.javafx.FontIcon;
 
 import edu.curso.View.AtendimentoView;
@@ -20,8 +21,10 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.stage.Stage;
+import java.sql.Connection;
 
 public class App extends Application {
+        
 
         public String getGreeting() {
                 return "Hello World!";
@@ -38,6 +41,8 @@ public class App extends Application {
 
         public static void main(String[] args) {
                 Application.launch(args);
+
+        
         }
 
         public BorderPane telaPrincipal() {

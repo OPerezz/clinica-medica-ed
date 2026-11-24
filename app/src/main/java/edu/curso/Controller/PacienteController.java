@@ -28,6 +28,10 @@ public class PacienteController {
     private IntegerProperty idade = new SimpleIntegerProperty(0);
     private StringProperty endereco = new SimpleStringProperty("");
     private StringProperty problema = new SimpleStringProperty("");
+
+    public PacienteController(){
+        pesquisarTodos();
+    }
     
 
 
@@ -44,6 +48,7 @@ public class PacienteController {
         dao.criar(p);
 
         limparDados();
+        pesquisarTodos();
         return true;
     }
 
@@ -105,20 +110,20 @@ public class PacienteController {
         limparDados();
     }
 
-    public Boolean confirmar() {
-        System.out.println("Para continuar, Digite 'SIM' ");
-
-        return ler.nextLine().equalsIgnoreCase("SIM");
-    }
-
     public void deletar() {
         for(Paciente p : list){
             if(id.get() == p.getId()){
-                list.remove(p);
+                dao.excluir(p);
             }
         }
 
+        pesquisarTodos();
         limparDados();
+    }
+
+    public void pesquisarTodos(){
+        list.clear();
+        list.addAll(dao.pesquisarTodos());
     }
 
     

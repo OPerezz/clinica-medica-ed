@@ -1,10 +1,12 @@
 package edu.curso.DAO;
 
-import java.util.list;
+import java.util.List;
+
+import edu.curso.Entity.Paciente;
 
 public interface PacienteDAO {
     Paciente criar( Paciente p);
-    // List<Paciente> pesquisarTodos();
-    // void excluir(Paciente p);
+    List<Paciente> pesquisarTodos();
+    void excluir(Paciente p);
     // void atualizar(long id, Paciente p);
 }

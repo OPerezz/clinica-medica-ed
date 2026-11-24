@@ -32,7 +32,11 @@ public class PacienteView {
         if(centralPacientePane == null){
             centralPacientePane = new BorderPane(); 
 
+            centralPacientePane.setStyle("-fx-background: #8ac6d1");
+
             Label title = new Label("Paciente");
+            title.setStyle("-fx-font-family: Arial;" + "-fx-font-size: 40;" + "-fx-text-fill: #000000" );
+
             VBox vbox = new VBox(30);
             HBox hbox = new HBox(30);
             TilePane tilePane = new TilePane();
@@ -41,9 +45,21 @@ public class PacienteView {
             Button voltar = new Button("Voltar");
 
             Button cadastrar = new Button("Cadastrar");
+            cadastrar.setStyle("-fx-background-color: #03054e;" + "-fx-text-fill: #fff;");
+            cadastrar.setPadding(new Insets(5,10,5,10));
+
+
             Button alterar = new Button("Alterar");
+            alterar.setStyle("-fx-background-color: #03054e;" + "-fx-text-fill: #fff;");
+            alterar.setPadding(new Insets(5,10,5,10));
+
             Button procurar = new Button("Procurar");
+            procurar.setStyle("-fx-background-color: #03054e;" + "-fx-text-fill: #fff;");
+            procurar.setPadding(new Insets(5,10,5,10));
+            
             Button deletar = new Button("Deletar");
+            deletar.setStyle("-fx-background-color: #03054e;" + "-fx-text-fill: #fff;"); 
+            deletar.setPadding(new Insets(5,10,5,10));
 
             cadastrar.setOnMouseClicked(event ->{
                 cadastrar();
@@ -196,6 +212,7 @@ public class PacienteView {
                     Button deletar = new Button("Deletar");
                     deletar.setOnMouseClicked(event -> {
                         pacControl.deletar();
+                        deletar();
                     });
                     gridPane.add(deletar,0,5);
                     break;

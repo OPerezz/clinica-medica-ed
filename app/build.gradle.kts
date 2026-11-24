@@ -12,8 +12,11 @@ dependencies {
     testImplementation(libs.junit)
     implementation(libs.guava)
 
+
     implementation("org.kordamp.ikonli:ikonli-javafx:12.3.1")
     implementation("org.kordamp.ikonli:ikonli-fontawesome5-pack:12.3.1")
+    implementation("com.mysql:mysql-connector-j:9.5.0")
+    
 }
 
 java {

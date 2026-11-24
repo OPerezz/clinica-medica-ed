@@ -13,6 +13,6 @@ CREATE TABLE pacientes (
     PRIMARY KEY( id )
 );
 
-INSERT INTO pacientes (nome, email, cpf, idade, endereco, problema) VALUES ('Joao Silva', 'joao@teste.com', '(11) 1111-1111', '45645645645', 24, 'Rua: XXX , SP', 'Asma');
+INSERT INTO pacientes (nome, email, cpf, idade, endereco, problema) VALUES ('Joao Silva', 'joao@teste.com', 1111111111, 23, 'Rua: XXX , SP', 'Asma');
 
 SELECT * FROM pacientes;

@@ -28,6 +28,7 @@ public class PacienteController {
     private IntegerProperty idade = new SimpleIntegerProperty(0);
     private StringProperty endereco = new SimpleStringProperty("");
     private StringProperty problema = new SimpleStringProperty("");
+    private StringProperty telefone = new SimpleStringProperty("");
 
     public PacienteController(){
         pesquisarTodos();
@@ -39,6 +40,7 @@ public class PacienteController {
         Paciente p = new Paciente();
 
         p.setNome(nome.get());
+        p.setTelefone(telefone.get());
         p.setEmail(email.get());
         p.setCpf(cpf.get());
         p.setIdade(idade.get());
@@ -52,19 +54,10 @@ public class PacienteController {
         return true;
     }
 
-    public void listar() {
-        if (list.isEmpty()) {
-            System.out.println("Lista Vazia");
-        } else {
-            for (Paciente p : list) {
-                System.out.println(p);
-            }
-        }
-    }
-
     public void limparDados(){
         id.set(0);
         nome.set("");
+        telefone.set("");
         email.set("");
         cpf.set(0);
         idade.set(0);
@@ -78,6 +71,7 @@ public class PacienteController {
             if(id.get() == p.getId()){
                 id.set(p.getId());
                 nome.set(p.getNome());
+                telefone.set(p.getTelefone());
                 email.set(p.getEmail());
                 cpf.set(p.getCpf());
                 idade.set(p.getIdade());
@@ -93,20 +87,19 @@ public class PacienteController {
 
 
     public void alterar() {
-        Paciente p = list.get(i);
+        Paciente novo = new Paciente();
 
-        if(p != null){
-            Paciente novo = new Paciente();
-            novo.setId(id.get());
-            novo.setNome(nome.get());
-            novo.setEmail(email.get());
-            novo.setCpf(cpf.get());
-            novo.setIdade(idade.get());
-            novo.setEndereco(endereco.get());
-            novo.setProblema(problema.get());
-            list.set(i, novo);
-        }
+        novo.setNome(nome.get());
+        novo.setTelefone(telefone.get());
+        novo.setEmail(email.get());
+        novo.setCpf(cpf.get());
+        novo.setIdade(idade.get());
+        novo.setEndereco(endereco.get());
+        novo.setProblema(problema.get());
 
+        dao.atualizar(id.get() , novo);
+
+        pesquisarTodos();
         limparDados();
     }
 
@@ -153,6 +146,10 @@ public class PacienteController {
 
     public StringProperty problemaProperty(){
         return problema;
+    }
+
+    public StringProperty telefoneProperty(){
+        return telefone;
     }
 
     public ObservableList<Paciente> getLista() {

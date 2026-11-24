@@ -28,14 +28,15 @@ public class PacienteDAOImp implements PacienteDAO {
     @Override
     public Paciente criar(Paciente p){
         try {
-            String sql = "INSERT INTO pacientes (nome, email, cpf, idade, endereco, problema) VALUES (?, ?, ?, ?, ?, ?)";
+            String sql = "INSERT INTO pacientes (nome,telefone, email, cpf, idade, endereco, problema) VALUES (?, ?, ?, ?, ?, ?, ?)";
             PreparedStatement stmt = con.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
             stmt.setString(1, p.getNome());
-            stmt.setString(2, p.getEmail());
-            stmt.setLong(3, p.getCpf());
-            stmt.setInt(4, p.getIdade());
-            stmt.setString(5, p.getEndereco());
-            stmt.setString(6, p.getProblema());
+            stmt.setString(2, p.getTelefone());
+            stmt.setString(3, p.getEmail());
+            stmt.setLong(4, p.getCpf());
+            stmt.setInt(5, p.getIdade());
+            stmt.setString(6, p.getEndereco());
+            stmt.setString(7, p.getProblema());
             stmt.executeUpdate();
             ResultSet rs = stmt.getGeneratedKeys();
             if(rs.next()){
@@ -79,11 +80,13 @@ public class PacienteDAOImp implements PacienteDAO {
 
                 p.setId(rs.getLong("id"));
                 p.setNome(rs.getString("nome"));
+                p.setTelefone(rs.getString("telefone"));
                 p.setEmail(rs.getString("email"));
                 p.setCpf(rs.getLong("cpf"));
                 p.setIdade(rs.getInt("idade"));
                 p.setEndereco(rs.getString("endereco"));
                 p.setProblema(rs.getString("problema"));
+
 
                 list.add(p);
             }
@@ -92,6 +95,29 @@ public class PacienteDAOImp implements PacienteDAO {
         }
 
         return list;
+    }
+
+    @Override
+    public void atualizar(long id, Paciente novo){
+        try{
+            String sql = "UPDATE pacientes SET nome=?, telefone=?, email=?, cpf=?, idade=?, endereco=?, problema=? WHERE  id = ?";
+            PreparedStatement stmt = con.prepareStatement(sql);
+            
+            stmt.setString(1, novo.getNome());
+            stmt.setString(2, novo.getTelefone());
+            stmt.setString(3, novo.getEmail());
+            stmt.setLong(4, novo.getCpf());
+            stmt.setInt(5, novo.getIdade());
+            stmt.setString(6, novo.getEndereco());
+            stmt.setString(7, novo.getProblema());
+            stmt.setLong(8, id);
+
+            stmt.executeUpdate();
+
+        }catch(Exception e){
+            System.out.println("Erro ao Atualizar o Paciente");
+            e.printStackTrace();
+        }
     }
 
 

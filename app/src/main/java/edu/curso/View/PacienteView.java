@@ -87,6 +87,7 @@ public class PacienteView {
 
             TableColumn<Paciente, Long> colId = new TableColumn<>("Nº");
             TableColumn<Paciente, String> colNome = new TableColumn<>("Nome");
+            TableColumn<Paciente, String> colTelefone = new TableColumn<>("Telefone");
             TableColumn<Paciente, String> colEmail = new TableColumn<>("Email");
             TableColumn<Paciente, Long> colCPF = new TableColumn<>("CPF");
             TableColumn<Paciente, Integer> colIdade = new TableColumn<>("Idade");
@@ -95,13 +96,14 @@ public class PacienteView {
 
             colId.setCellValueFactory(item -> new ReadOnlyLongWrapper(item.getValue().getId()).asObject());
             colNome.setCellValueFactory(item -> new ReadOnlyStringWrapper(item.getValue().getNome()));
+            colTelefone.setCellValueFactory(item -> new ReadOnlyStringWrapper(item.getValue().getTelefone()));
             colEmail.setCellValueFactory(item -> new ReadOnlyStringWrapper(item.getValue().getEmail()));
             colCPF.setCellValueFactory(item -> new ReadOnlyLongWrapper(item.getValue().getCpf()).asObject());
             colIdade.setCellValueFactory(item -> new ReadOnlyIntegerWrapper(item.getValue().getIdade()).asObject());
             colEndereco.setCellValueFactory(item -> new ReadOnlyStringWrapper(item.getValue().getEndereco()));
             colProblema.setCellValueFactory(item -> new ReadOnlyStringWrapper(item.getValue().getProblema()));
 
-            table.getColumns().addAll(colId, colNome, colEmail, colCPF, colIdade, colEndereco, colProblema);
+            table.getColumns().addAll(colId, colNome, colTelefone, colEmail, colCPF, colIdade, colEndereco, colProblema);
 
             table.setItems(pacControl.getLista());
 
@@ -129,6 +131,9 @@ public class PacienteView {
         Label txtNome = new Label("Nome");
         TextField fieldNome = new TextField();
 
+        Label txtTelefone = new Label("Telefone");
+        TextField fieldTelefone = new TextField();
+
         
         Label txtEmail = new Label("Email");
         TextField fieldEmail = new TextField();
@@ -148,6 +153,7 @@ public class PacienteView {
 
         Bindings.bindBidirectional(fieldId.textProperty(), pacControl.idProperty(), new NumberStringConverter());
         Bindings.bindBidirectional(fieldNome.textProperty(), pacControl.nomeProperty());
+        Bindings.bindBidirectional(fieldTelefone.textProperty(), pacControl.telefoneProperty());
         Bindings.bindBidirectional(fieldEmail.textProperty(), pacControl.emailProperty());
         Bindings.bindBidirectional(fieldCPF.textProperty(), pacControl.cpfProperty(), new NumberStringConverter());
         Bindings.bindBidirectional(fieldIdade.textProperty(), pacControl.idadeProperty(), new NumberStringConverter());
@@ -180,6 +186,9 @@ public class PacienteView {
         
         gridPane.add(txtProblema, 3, 3);
         gridPane.add(fieldProblema, 4, 3);
+
+        gridPane.add(txtTelefone, 1, 4);
+        gridPane.add(fieldTelefone, 2, 4);
 
         gridPane.setVgap(15);
         gridPane.setHgap(15);

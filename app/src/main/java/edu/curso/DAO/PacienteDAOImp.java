@@ -28,15 +28,14 @@ public class PacienteDAOImp implements PacienteDAO {
     @Override
     public Paciente criar(Paciente p){
         try {
-            String sql = "INSERT INTO pacientes (nome,telefone, email, cpf, idade, endereco, problema) VALUES (?, ?, ?, ?, ?, ?, ?)";
+            String sql = "INSERT INTO pacientes (nome, email, cpf, idade, endereco, problema) VALUES (?, ?, ?, ?, ?, ?)";
             PreparedStatement stmt = con.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
             stmt.setString(1, p.getNome());
-            stmt.setString(2, p.getTelefone());
-            stmt.setString(3, p.getEmail());
-            stmt.setLong(4, p.getCpf());
-            stmt.setInt(5, p.getIdade());
-            stmt.setString(6, p.getEndereco());
-            stmt.setString(7, p.getProblema());
+            stmt.setString(2, p.getEmail());
+            stmt.setLong(3, p.getCpf());
+            stmt.setInt(4, p.getIdade());
+            stmt.setString(5, p.getEndereco());
+            stmt.setString(6, p.getProblema());
             stmt.executeUpdate();
             ResultSet rs = stmt.getGeneratedKeys();
             if(rs.next()){
@@ -47,13 +46,14 @@ public class PacienteDAOImp implements PacienteDAO {
         } catch (Exception e) {
             System.out.println("Erro ao inserir no banco de dados");
             e.printStackTrace();
+            return null;
         }
 
         return p;
     }
 
     @Override
-    public void excluir( Paciente p){
+    public boolean excluir(Paciente p){
         try {
             String sql = "DELETE FROM pacientes WHERE id=?";
             PreparedStatement stmt = con.prepareStatement(sql);
@@ -61,15 +61,16 @@ public class PacienteDAOImp implements PacienteDAO {
             stmt.setLong(1, p.getId());
             stmt.executeUpdate();
         } catch (Exception e) {
-            System.out.println("Erro ao Deletar: Verifiue o Track");
             e.printStackTrace();
+            return false;
         }
+        return true;
     }
 
     @Override
     public List<Paciente> pesquisarTodos(){
         List<Paciente> list = new ArrayList<>();
-
+        
         try{
             String sql = "SELECT * FROM pacientes";
             PreparedStatement stmt = con.prepareStatement(sql);
@@ -80,7 +81,6 @@ public class PacienteDAOImp implements PacienteDAO {
 
                 p.setId(rs.getLong("id"));
                 p.setNome(rs.getString("nome"));
-                p.setTelefone(rs.getString("telefone"));
                 p.setEmail(rs.getString("email"));
                 p.setCpf(rs.getLong("cpf"));
                 p.setIdade(rs.getInt("idade"));
@@ -92,32 +92,35 @@ public class PacienteDAOImp implements PacienteDAO {
             }
         }catch(Exception e){
             System.out.println("Erro ao Listar Todos");
+            e.printStackTrace();
         }
 
         return list;
     }
 
     @Override
-    public void atualizar(long id, Paciente novo){
+    public boolean atualizar(long id, Paciente novo){
         try{
-            String sql = "UPDATE pacientes SET nome=?, telefone=?, email=?, cpf=?, idade=?, endereco=?, problema=? WHERE  id = ?";
+            String sql = "UPDATE pacientes SET nome=?, email=?, cpf=?, idade=?, endereco=?, problema=? WHERE  id = ?";
             PreparedStatement stmt = con.prepareStatement(sql);
             
             stmt.setString(1, novo.getNome());
-            stmt.setString(2, novo.getTelefone());
-            stmt.setString(3, novo.getEmail());
-            stmt.setLong(4, novo.getCpf());
-            stmt.setInt(5, novo.getIdade());
-            stmt.setString(6, novo.getEndereco());
-            stmt.setString(7, novo.getProblema());
-            stmt.setLong(8, id);
+            stmt.setString(2, novo.getEmail());
+            stmt.setLong(3, novo.getCpf());
+            stmt.setInt(4, novo.getIdade());
+            stmt.setString(5, novo.getEndereco());
+            stmt.setString(6, novo.getProblema());
+            stmt.setLong(7, id);
 
             stmt.executeUpdate();
 
         }catch(Exception e){
             System.out.println("Erro ao Atualizar o Paciente");
-            e.printStackTrace();
+             e.printStackTrace();
+            return false;
         }
+
+        return true;
     }
 
 

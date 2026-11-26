@@ -1,6 +1,6 @@
 package edu.curso.View;
 
-
+import org.kordamp.ikonli.javafx.FontIcon;
 import edu.curso.Controller.PacienteController;
 import edu.curso.Entity.Paciente;
 import javafx.beans.binding.Bindings;
@@ -16,57 +16,60 @@ import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.GridPane;
-import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.TilePane;
 import javafx.scene.layout.VBox;
 import javafx.util.converter.NumberStringConverter;
+import javafx.scene.control.TableCell;
+import javafx.util.Callback;
+import javafx.scene.layout.HBox;
+import javafx.scene.paint.Color;
+import javafx.util.Callback;
 
 public class PacienteView {
+
     BorderPane centralPacientePane;
+    private TilePane tilePane;
     Pane pane = new Pane();
     PacienteController pacControl = new PacienteController();
 
     public BorderPane centralPane(){
-        
+
         if(centralPacientePane == null){
-            centralPacientePane = new BorderPane(); 
+            centralPacientePane = new BorderPane();
 
-            centralPacientePane.setStyle("-fx-background: #8ac6d1");
+            centralPacientePane.setStyle("-fx-background-color: #8ac6d1;");
 
-            Label title = new Label("Paciente");
-            title.setStyle("-fx-font-family: Arial;" + "-fx-font-size: 40;" + "-fx-text-fill: #000000" );
+            Label title = new Label("Pacientes");
+            title.setStyle(
+                "-fx-font-family: Segoe UI;" +
+                "-fx-font-size: 40px;" +
+                "-fx-font-weight: bold;" +
+                "-fx-text-fill: #140457;"
+            );
 
             VBox vbox = new VBox(30);
-            HBox hbox = new HBox(30);
-            TilePane tilePane = new TilePane();
+            tilePane = new TilePane();
             TableView<Paciente> table = new TableView<>();
 
-            Button voltar = new Button("Voltar");
-
             Button cadastrar = new Button("Cadastrar");
-            cadastrar.setStyle("-fx-background-color: #03054e;" + "-fx-text-fill: #fff;");
+            cadastrar.setStyle("-fx-background-color: #07539f;" + "-fx-text-fill: #e0e0e0;");
             cadastrar.setPadding(new Insets(5,10,5,10));
 
-
             Button alterar = new Button("Alterar");
-            alterar.setStyle("-fx-background-color: #03054e;" + "-fx-text-fill: #fff;");
+            alterar.setStyle("-fx-background-color: #07539f;" + "-fx-text-fill: #e0e0e0;");
             alterar.setPadding(new Insets(5,10,5,10));
 
             Button procurar = new Button("Procurar");
-            procurar.setStyle("-fx-background-color: #03054e;" + "-fx-text-fill: #fff;");
+            procurar.setStyle("-fx-background-color: #07539f;" + "-fx-text-fill: #e0e0e0;");
             procurar.setPadding(new Insets(5,10,5,10));
-            
+
             Button deletar = new Button("Deletar");
-            deletar.setStyle("-fx-background-color: #03054e;" + "-fx-text-fill: #fff;"); 
+            deletar.setStyle("-fx-background-color: #07539f;" + "-fx-text-fill: #e0e0e0;");
             deletar.setPadding(new Insets(5,10,5,10));
 
-            cadastrar.setOnMouseClicked(event ->{
+            cadastrar.setOnMouseClicked(event -> {
                 cadastrar();
-            });
-
-            voltar.setOnMouseClicked(event -> {
-                voltar(tilePane);
             });
 
             procurar.setOnMouseClicked(event -> {
@@ -87,29 +90,97 @@ public class PacienteView {
 
             TableColumn<Paciente, Long> colId = new TableColumn<>("Nº");
             TableColumn<Paciente, String> colNome = new TableColumn<>("Nome");
-            TableColumn<Paciente, String> colTelefone = new TableColumn<>("Telefone");
             TableColumn<Paciente, String> colEmail = new TableColumn<>("Email");
             TableColumn<Paciente, Long> colCPF = new TableColumn<>("CPF");
             TableColumn<Paciente, Integer> colIdade = new TableColumn<>("Idade");
             TableColumn<Paciente, String> colEndereco = new TableColumn<>("Endereço");
             TableColumn<Paciente, String> colProblema = new TableColumn<>("Problema");
+            TableColumn<Paciente, Void> colAcoes = new TableColumn<>("Ações");
+            Callback<TableColumn<Paciente, Void>, TableCell<Paciente, Void>> callBack = 
+                new Callback<>(){ 
+                    public TableCell<Paciente, Void> call(TableColumn<Paciente, Void> tc) { 
+                        TableCell<Paciente, Void> tableCell = new TableCell<>(){
+
+                            private final Button btnExcluir = new Button();
+                            private final Button btnAtualizar = new Button();
+                            private final HBox painelBotoes = new HBox(10);
+
+                            {
+                                FontIcon iconExcluir = new FontIcon("fas-trash");
+                                iconExcluir.setIconColor(Color.web("#ef6464"));
+
+                                FontIcon iconAtualizar = new FontIcon("fas-edit");
+                                iconAtualizar.setIconColor(Color.web("#66b5ff"));
+
+                                btnExcluir.setGraphic(iconExcluir);
+                                btnAtualizar.setGraphic(iconAtualizar);
+
+                                btnExcluir.setStyle("-fx-background-color: #424242;");
+                                btnAtualizar.setStyle("-fx-background-color: #424242;");
+
+                                painelBotoes.getChildren().addAll(btnAtualizar, btnExcluir);
+
+                                btnExcluir.setOnAction(e -> {
+                                    Paciente m = getTableRow().getItem();
+
+                                    if(m != null){
+                                        pacControl.idProperty().set(m.getId());
+
+                                        if(pacControl.procurar() != null){
+                                            montarForm(ModoFormulario.DELETAR);
+                                        }
+                                    }
+                                });
+
+                                btnAtualizar.setOnAction(e -> {
+                                    Paciente m = getTableRow().getItem();
+
+                                    if(m != null){
+                                        pacControl.idProperty().set(m.getId());
+
+                                        if(pacControl.procurar() != null){
+                                            montarForm(ModoFormulario.ALTERAR);
+                                        }
+                                    }
+                                });
+                            }
+
+                            @Override
+                            public void updateItem(Void valor, boolean empty){
+                                super.updateItem(valor, empty);
+
+                                if(!empty){
+                                    setGraphic(painelBotoes);
+                                }else{
+                                    setGraphic(null);
+                                }
+                            }
+                        };
+
+                        return tableCell;
+                }
+            };
+
+            colAcoes.setCellFactory(callBack);
+
 
             colId.setCellValueFactory(item -> new ReadOnlyLongWrapper(item.getValue().getId()).asObject());
             colNome.setCellValueFactory(item -> new ReadOnlyStringWrapper(item.getValue().getNome()));
-            colTelefone.setCellValueFactory(item -> new ReadOnlyStringWrapper(item.getValue().getTelefone()));
             colEmail.setCellValueFactory(item -> new ReadOnlyStringWrapper(item.getValue().getEmail()));
             colCPF.setCellValueFactory(item -> new ReadOnlyLongWrapper(item.getValue().getCpf()).asObject());
             colIdade.setCellValueFactory(item -> new ReadOnlyIntegerWrapper(item.getValue().getIdade()).asObject());
             colEndereco.setCellValueFactory(item -> new ReadOnlyStringWrapper(item.getValue().getEndereco()));
             colProblema.setCellValueFactory(item -> new ReadOnlyStringWrapper(item.getValue().getProblema()));
 
-            table.getColumns().addAll(colId, colNome, colTelefone, colEmail, colCPF, colIdade, colEndereco, colProblema);
+            table.getColumns().addAll(colId, colNome, colEmail, colCPF, colIdade, colEndereco, colProblema, colAcoes);
+
+            table.setColumnResizePolicy(
+                TableView.CONSTRAINED_RESIZE_POLICY
+            );
 
             table.setItems(pacControl.getLista());
 
-            hbox.getChildren().addAll(voltar, pane);
-
-            vbox.getChildren().addAll(title, hbox, table);
+            vbox.getChildren().addAll(title, pane, table);
 
             centralPacientePane.setCenter(vbox);
 
@@ -120,6 +191,7 @@ public class PacienteView {
     }
 
     public void montarForm(ModoFormulario modo){
+        VBox vbox = new VBox(20);
         GridPane gridPane = new GridPane();
         gridPane.getChildren().clear();
 
@@ -127,18 +199,13 @@ public class PacienteView {
         TextField fieldId = new TextField();
         fieldId.setEditable(false);
 
-        
         Label txtNome = new Label("Nome");
         TextField fieldNome = new TextField();
-
-        Label txtTelefone = new Label("Telefone");
-        TextField fieldTelefone = new TextField();
-
         
+
         Label txtEmail = new Label("Email");
         TextField fieldEmail = new TextField();
 
-        
         Label txtCPF = new Label("CPF");
         TextField fieldCPF = new TextField();
 
@@ -153,92 +220,116 @@ public class PacienteView {
 
         Bindings.bindBidirectional(fieldId.textProperty(), pacControl.idProperty(), new NumberStringConverter());
         Bindings.bindBidirectional(fieldNome.textProperty(), pacControl.nomeProperty());
-        Bindings.bindBidirectional(fieldTelefone.textProperty(), pacControl.telefoneProperty());
         Bindings.bindBidirectional(fieldEmail.textProperty(), pacControl.emailProperty());
         Bindings.bindBidirectional(fieldCPF.textProperty(), pacControl.cpfProperty(), new NumberStringConverter());
         Bindings.bindBidirectional(fieldIdade.textProperty(), pacControl.idadeProperty(), new NumberStringConverter());
         Bindings.bindBidirectional(fieldEndereco.textProperty(), pacControl.enderecoProperty());
         Bindings.bindBidirectional(fieldProblema.textProperty(), pacControl.problemaProperty());
 
-
         // gridPane.add(txtId, 0, 0);
         // gridPane.add(fieldId, 1, 0);
 
-        
         gridPane.add(txtNome, 0, 1);
         gridPane.add(fieldNome, 1, 1);
 
         gridPane.add(txtEmail, 3, 1);
         gridPane.add(fieldEmail, 4, 1);
 
-        
         gridPane.add(txtCPF, 0, 2);
         gridPane.add(fieldCPF, 1, 2);
 
-        
         gridPane.add(txtIdade, 3, 2);
         gridPane.add(fieldIdade, 4, 2);
 
-        
         gridPane.add(txtEndereco, 0, 3);
         gridPane.add(fieldEndereco, 1, 3);
 
-        
         gridPane.add(txtProblema, 3, 3);
         gridPane.add(fieldProblema, 4, 3);
-
-        gridPane.add(txtTelefone, 1, 4);
-        gridPane.add(fieldTelefone, 2, 4);
 
         gridPane.setVgap(15);
         gridPane.setHgap(15);
 
-
         pane.getChildren().clear();
-        pane.getChildren().add(gridPane);
+
+        vbox.getChildren().addAll(voltarButton(), gridPane);
+        pane.getChildren().add(vbox);
 
         switch (modo){
             case CADASTRAR:
-                    Button salvar = new Button("Salvar");
-                    gridPane.add(salvar,0,5);
-                    salvar.setOnMouseClicked(event -> {
-                        pacControl.criar();
-                    });
-                    break;
+                Button salvar = new Button("Salvar");
+                salvar.setStyle("-fx-background-color: #07539f;" + "-fx-text-fill: #e0e0e0;");
+                gridPane.add(salvar,0,5);
+
+                salvar.setOnAction(event -> {
+                    if(!pacControl.criar()){
+                        new Alert(
+                            Alert.AlertType.WARNING,
+                            "Não foi possível cadastrar o paciente"
+                        ).showAndWait();
+                    }
+                });
+                break;
 
             case PROCURAR:
-                    break;
+                break;
 
             case ALTERAR:
-                    Button alterar = new Button("Alterar");
-                    alterar.setOnMouseClicked(event -> {
-                        pacControl.alterar();
-                    });
-                    gridPane.add(alterar, 0, 5);
-                    break;
+                Button alterar = new Button("Alterar");
+                alterar.setStyle("-fx-background-color: #07539f;" + "-fx-text-fill: #e0e0e0;");
+                alterar.setOnAction(event -> {
+                    if(pacControl.alterar()){
+                        alterar();
+                    }else{
+                        new Alert(
+                            Alert.AlertType.WARNING,
+                            "Não foi possível alterar o paciente"
+                        ).showAndWait();
+                    }
+                });
+
+                gridPane.add(alterar, 0, 5);
+                break;
 
             case DELETAR:
-                    Button deletar = new Button("Deletar");
-                    deletar.setOnMouseClicked(event -> {
-                        pacControl.deletar();
+                Button deletar = new Button("Deletar");
+                deletar.setStyle("-fx-background-color: #07539f;" + "-fx-text-fill: #e0e0e0;");
+                deletar.setOnAction(event -> {
+                    if(pacControl.deletar()){
                         deletar();
-                    });
-                    gridPane.add(deletar,0,5);
-                    break;
-            }
+                    }else{
+                        new Alert(
+                            Alert.AlertType.WARNING,
+                            "Não foi possível excluir o paciente"
+                        ).showAndWait();
+                    }
+                });
+
+                gridPane.add(deletar,0,5);
+                break;
+        }
     }
 
-    public void voltar(TilePane tilePane){
-        pacControl.limparDados();
-        pane.getChildren().clear();
-        pane.getChildren().add(tilePane);
+    public Button voltarButton(){
+        Button voltarButton = new Button("Voltar");
+        voltarButton.setStyle("-fx-background-color: #07539f;" + "-fx-text-fill: #e0e0e0;");
+        voltarButton.setOnMouseClicked(event -> {
+            pacControl.limparDados();
+            pane.getChildren().clear();
+            pane.getChildren().add(tilePane);
+        });
+
+
+        return voltarButton;
     }
 
     public void cadastrar(){
+        pacControl.limparDados();
         montarForm(ModoFormulario.CADASTRAR);
     }
 
     public void procurar(){
+        VBox vbox = new VBox(20);
         GridPane gridPane = new GridPane();
 
         Label txtId = new Label("ID");
@@ -247,84 +338,102 @@ public class PacienteView {
         gridPane.add(txtId, 0,0);
         gridPane.add(fieldId, 1,0);
 
-
         gridPane.setVgap(15);
         gridPane.setHgap(15);
-
 
         Bindings.bindBidirectional(fieldId.textProperty(), pacControl.idProperty(), new NumberStringConverter());
 
         Button procurar = new Button("Procurar");
-
+        procurar.setStyle("-fx-background-color: #07539f;" + "-fx-text-fill: #e0e0e0;");
         gridPane.add(procurar, 0,2);
 
         procurar.setOnMouseClicked(event -> {
-            if (pacControl.procurar()) {
+            if(pacControl.procurar() != null){
                 montarForm(ModoFormulario.PROCURAR);
-            } else {
-                new Alert(Alert.AlertType.WARNING, "Paciente não encontrado")
-                    .showAndWait();
+            }else{
+                new Alert(
+                    Alert.AlertType.WARNING,
+                    "Paciente não encontrado"
+                ).showAndWait();
             }
         });
 
         pane.getChildren().clear();
-        pane.getChildren().add(gridPane);
+
+        vbox.getChildren().addAll(voltarButton(), gridPane);
+        pane.getChildren().add(vbox);
     }
 
     public void alterar(){
+        VBox vbox = new VBox(20);
         GridPane gridPane = new GridPane();
 
         Label txtId = new Label("ID");
         TextField fieldId = new TextField();
-        
+
         Bindings.bindBidirectional(fieldId.textProperty(), pacControl.idProperty(), new NumberStringConverter());
 
         gridPane.add(txtId,0,0);
         gridPane.add(fieldId,0,1);
-        
+
         gridPane.setVgap(15);
         gridPane.setHgap(15);
 
-
         Button procurar = new Button("Procurar");
+        procurar.setStyle("-fx-background-color: #07539f;" + "-fx-text-fill: #e0e0e0;");
         gridPane.add(procurar, 0,2);
 
-
-        procurar.setOnMouseClicked(event -> {
-            pacControl.procurar();
-            montarForm(ModoFormulario.ALTERAR);
+        procurar.setOnAction(event -> {
+            if(pacControl.procurar() != null){
+                montarForm(ModoFormulario.ALTERAR);
+            }else{
+                new Alert(
+                    Alert.AlertType.WARNING,
+                    "Paciente não encontrado"
+                ).showAndWait();
+            }
         });
-        
+
         pane.getChildren().clear();
-        pane.getChildren().add(gridPane);
+
+        vbox.getChildren().addAll(voltarButton(), gridPane);
+        pane.getChildren().add(vbox);
     }
 
     public void deletar(){
+        VBox vbox = new VBox(20);
         GridPane gridPane = new GridPane();
 
         Label txtId = new Label("ID");
         TextField fieldId = new TextField();
-        
+
         Bindings.bindBidirectional(fieldId.textProperty(), pacControl.idProperty(), new NumberStringConverter());
 
         gridPane.add(txtId,0,0);
         gridPane.add(fieldId,0,1);
-        
+
         gridPane.setVgap(15);
         gridPane.setHgap(15);
 
-
         Button procurar = new Button("Procurar");
-
+        procurar.setStyle("-fx-background-color: #07539f;" + "-fx-text-fill: #e0e0e0;");
         gridPane.add(procurar, 0,2);
 
-        procurar.setOnMouseClicked(event -> {
-            pacControl.procurar();
-            montarForm(ModoFormulario.DELETAR);
+        procurar.setOnAction(event -> {
+            if(pacControl.procurar() != null){
+                montarForm(ModoFormulario.DELETAR);
+            }else{
+                new Alert(
+                    Alert.AlertType.WARNING,
+                    "Paciente não encontrado"
+                ).showAndWait();
+            }
         });
-        
+
         pane.getChildren().clear();
-        pane.getChildren().add(gridPane);
+
+        vbox.getChildren().addAll(voltarButton(), gridPane);
+        pane.getChildren().add(vbox);
     }
 
     private enum ModoFormulario {

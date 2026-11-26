@@ -2,132 +2,173 @@ package edu.curso.Controller;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
-import java.util.Scanner;
+import java.time.format.DateTimeParseException;
 
+import edu.curso.DAO.AtendimentoDAO;
+import edu.curso.DAO.AtendimentoDAOImp;
 import edu.curso.Entity.Atendimento;
+import edu.curso.Entity.Medico;
+import edu.curso.Entity.Paciente;
 import javafx.beans.property.LongProperty;
 import javafx.beans.property.SimpleLongProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
-
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 
 public class AtendimentoController {
-    private Scanner ler = new Scanner(System.in);
-    private PacienteController pc;
-    private MedicoController mc;
-    private long count = 0;
-    private ArrayList<Atendimento> list = new ArrayList<>();
+    AtendimentoDAO dao = new AtendimentoDAOImp();
+    
+    private MedicoController mc = new MedicoController();
+    private PacienteController pc = new PacienteController();
+
+    
+    private ObservableList<Atendimento> list = FXCollections.observableArrayList();
     private DateTimeFormatter formato = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm");
+
 
     private LongProperty id = new SimpleLongProperty(0);
     private StringProperty data = new SimpleStringProperty("");
     private LongProperty medicoId = new SimpleLongProperty(0);
     private LongProperty pacienteId = new SimpleLongProperty(0);
 
-    public AtendimentoController(){}
+    private StringProperty medicoNome = new SimpleStringProperty();
+    private StringProperty pacienteNome = new SimpleStringProperty();
+    private StringProperty erro = new SimpleStringProperty("");
 
-    public AtendimentoController(PacienteController pc, MedicoController mc){
-        this.pc = pc;
-        this.mc = mc;
+    public AtendimentoController(){
+        listarTodos();
     }
 
-    public void agendar() {
+    public boolean agendar() {
+
+    if(!validar()){
+        return false;
+    }
+
+    Atendimento a = new Atendimento();
+
+    Medico m = mc.procurar(medicoId.get());
+    Paciente p = pc.procurar(pacienteId.get());
+
+    a.setData(LocalDateTime.parse(data.get(), formato));
+    a.setM(m);
+    a.setP(p);
+
+    if(dao.agendar(a) == null){
+        erro.set("Erro ao cadastrar atendimento.");
+        return false;
+    }
+
+    limparDados();
+    listarTodos();
+
+    return true;
+    }
+
+    public void limparDados(){
+        id.set(0);
+        data.set("");
+        medicoId.set(0);
+        pacienteId.set(0);
+        medicoNome.set("");
+        pacienteNome.set("");
+    }
+
+    public void listarTodos(){
+        list.setAll(dao.listarTodos());
+    }
+
+    public boolean alterar(){
         Atendimento a = new Atendimento();
-        a.setId(count);
+        Medico m = mc.procurar(medicoId.get());
+        Paciente p = pc.procurar(pacienteId.get());
 
-        preencherDados(a);
-
-        list.add(a);
-
-        for(Atendimento atendimento :  list){
-            System.out.println(a);
+         if(!validar()){
+            return false;
         }
 
-        count++;
-    }
-
-    public void preencherDados(Atendimento a) {
+        a.setM(mc.procurar(medicoId.get()));
+        a.setP(pc.procurar(pacienteId.get()));
         a.setData(LocalDateTime.parse(data.get(), formato));
-
+        
+        dao.alterar(id.get(), a);
         
 
-        System.out.println("Insira o id do Medico");
-        a.setM(mc.procurar(pacienteId.get()));
+        listarTodos();
+
+        return true;
     }
 
-    public void listar() {
-        for (Atendimento a : list) {
-            System.out.println("============================");
-            System.out.println(a);
-            System.out.println("============================");
-        }
-    }
-
-    public Atendimento procurar(long id) {
-        for (Atendimento a : list) {
-            if (id == a.getId()) {
-                return a;
+    public boolean procurar() {
+        for(Atendimento a : list){
+            
+            if(id.get() == a.getId()){
+                id.set(a.getId());
+                medicoId.set(a.getM().getId());
+                medicoNome.set(a.getM().getNome());
+                pacienteId.set(a.getP().getId());
+                pacienteNome.set(a.getP().getNome());
+                data.set(a.getData().format(formato));
+                
+                return true;
             }
         }
 
-        return null;
-    }
-
-    public void mostrar() {
-        System.out.println("Insira o id do agendamento");
-        Atendimento a = procurar(ler.nextLong());
-
-        System.out.println("============================");
-        System.out.println(
-                a == null ? "Atendimento não encontrado" : a);
-        System.out.println("============================");
+        return false;
     }
 
     public void deletar() {
-        System.out.println("Digite o numero do atedimento que deseja deletar");
-        Atendimento a = procurar(ler.nextLong());
-
-        if (a == null) {
-            System.out.println("Atendimento não Encontrado");
-            return;
-        }
-
-        if (confirmar()) {
-            list.remove(a);
-        } else {
-            System.out.println("Operação cancelada");
-        }
+        
+        dao.deletar(id.get());
+        listarTodos();
     }
 
-    public void alterar() {
-        System.out.println("Digite o numero do atedimento que deseja Alterar");
-        Atendimento a = procurar(ler.nextLong());
+    public boolean validar(){
 
-        if (a == null) {
-            System.out.println("Atendimento não Encontrado");
-            return;
-        }
+    erro.set("");
 
-        if (confirmar()) {
-            preencherDados(a);
+    System.out.println("ID Medico: " + medicoId.get());
+    System.out.println("ID Paciente: " + pacienteId.get());
 
-            System.out.println("Cadastro Alterado");
-        } else {
-            System.out.println("Operação Cancelada");
-        }
-
+    if(medicoId.get() <= 0){
+        erro.set("Informe o ID do médico.");
+        return false;
     }
 
-    public Boolean confirmar() {
-        System.out.println("Deseja Realmente realizar essa Operação ? Digite 'SIM' para confirmar");
-        return ler.nextLine().equalsIgnoreCase("SIM");
+    if(mc.procurar(medicoId.get()) == null){
+        erro.set("Médico não encontrado.");
+        return false;
     }
 
+    if(pacienteId.get() <= 0){
+        erro.set("Informe o ID do paciente.");
+        return false;
+    }
+
+    if(pc.procurar(pacienteId.get()) == null){
+        erro.set("Paciente não encontrado.");
+        return false;
+    }
+
+    if(data.get() == null || data.get().isBlank()){
+        erro.set("Informe a data do atendimento.");
+        return false;
+    }
+
+    try{
+        LocalDateTime.parse(data.get(), formato);
+    }catch(DateTimeParseException e){
+        erro.set("Data inválida. Utilize dd/MM/yyyy HH:mm.");
+        return false;
+    }
+
+    return true;
+    }
+    
     public LongProperty idProperty(){
         return id;
     }
-
 
     public StringProperty dataProperty(){
         return data;
@@ -137,7 +178,23 @@ public class AtendimentoController {
         return medicoId;
     }
 
+    public StringProperty medicoNomeProperty(){
+        return medicoNome;
+    }
+
     public LongProperty pacienteIdProperty(){
         return pacienteId;
+    }
+
+    public StringProperty pacienteNomeProperty(){
+        return pacienteNome;
+    }
+
+    public StringProperty erroProperty(){
+        return erro;
+    }
+
+    public ObservableList<Atendimento> getList(){
+        return list;
     }
 }

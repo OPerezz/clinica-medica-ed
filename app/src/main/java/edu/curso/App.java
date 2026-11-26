@@ -21,7 +21,6 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.stage.Stage;
-import java.sql.Connection;
 
 public class App extends Application {
         
@@ -149,6 +148,10 @@ public class App extends Application {
 
                 txtDrawerAtendimentos.setOnMouseClicked(event -> {
                         pai.setCenter(atendView.centralPane());
+                });
+
+                txtDrawerMedico.setOnMouseClicked(event ->{
+                        pai.setCenter(medicoView.centralPane());
                 });
 
                 txtDrawerPaciente.setOnMouseClicked(event -> {

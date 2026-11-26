@@ -3,7 +3,7 @@ package edu.curso.Entity;
 import java.time.LocalDateTime;
 
 public class Atendimento {
-    private long id;
+    private Long id;
     private LocalDateTime data;
     private Paciente p;
     private Medico m;
@@ -49,13 +49,6 @@ public class Atendimento {
         this.data = data;
     }
 
-    public Medico getMedico(){
-        return m;
-    }
-
-    public Paciente getPaciente(){
-        return p;
-    }
 
     @Override
     public String toString(){

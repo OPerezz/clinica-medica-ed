@@ -7,6 +7,6 @@ import edu.curso.Entity.Paciente;
 public interface PacienteDAO {
     Paciente criar( Paciente p);
     List<Paciente> pesquisarTodos();
-    void excluir(Paciente p);
-    void atualizar(long id, Paciente novo);
+    boolean excluir(Paciente p);
+    boolean atualizar(long id, Paciente novo);
 }

@@ -1,32 +1,92 @@
 package edu.curso.Controller;
 
-import java.util.ArrayList;
-import java.util.Scanner;
 
+import edu.curso.DAO.MedicoDAO;
+import edu.curso.DAO.MedicoDAOImp;
 import edu.curso.Entity.Medico;
+import javafx.beans.property.IntegerProperty;
+import javafx.beans.property.LongProperty;
+import javafx.beans.property.SimpleIntegerProperty;
+import javafx.beans.property.SimpleLongProperty;
+import javafx.beans.property.SimpleStringProperty;
+import javafx.beans.property.StringProperty;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 
 public class MedicoController {
-    private int count = 0;
-    private Scanner ler = new Scanner(System.in);
-    private ArrayList<Medico> list = new ArrayList<>();
+    MedicoDAO dao = new MedicoDAOImp();
 
-    public void criar() {
-        Medico m = new Medico();
-        System.out.println("Insira Abaixo as infos do Medico");
+    private ObservableList<Medico> list = FXCollections.observableArrayList();
 
-        m.setId(count);
+    private LongProperty id = new SimpleLongProperty();
+    private StringProperty nome = new SimpleStringProperty("");
+    private StringProperty email = new SimpleStringProperty("");
+    private LongProperty cpf = new SimpleLongProperty();
+    private IntegerProperty idade = new SimpleIntegerProperty();
+    private StringProperty crm = new SimpleStringProperty();
+    private StringProperty telefone = new SimpleStringProperty();
 
-        preencherDados(m);
-
-
-        list.add(m);
-
-        count = count + 1;
+    public MedicoController(){
+        listarTodos();
     }
 
-    public Medico procurar(long id) {
-        for (Medico m : list) {
-            if (id == m.getId()) {
+    public boolean criar(){
+        if(nome.get() == null || nome.get().isBlank() ||
+            email.get() == null || email.get().isBlank() ||
+            cpf.get() <= 0 ||
+            idade.get() <= 0 ||
+            crm.get() == null || crm.get().isBlank()){
+
+            System.out.println("Preencha todos os campos corretamente");
+            return false;
+        }
+        
+        Medico m = new Medico();
+
+        m.setNome(nome.get());
+        m.setEmail(email.get());
+        m.setCpf(cpf.get());
+        m.setIdade(idade.get());
+        m.setCrm(crm.get());
+        m.setTelefone(telefone.get());
+
+        if(dao.criar(m) == null){
+            return false;
+        }
+
+        limparDados();
+        listarTodos();
+        return true;
+    }
+
+    public void limparDados(){
+        id.set(0);
+        nome.set("");
+        email.set("");
+        cpf.set(0);
+        idade.set(0);
+        crm.set("");
+        telefone.set("");
+
+    }
+
+    public void listarTodos(){
+        list.clear();
+        list.setAll(dao.listarTodos());
+    }
+
+    public Medico procurar(){
+        listarTodos();
+
+        for(Medico m: list){
+            if(m.getId() == id.get()){
+                nome.set(m.getNome());
+                email.set(m.getEmail());
+                cpf.set(m.getCpf());
+                idade.set(m.getIdade());
+                crm.set(m.getCrm());
+                telefone.set(m.getTelefone());
+
                 return m;
             }
         }
@@ -34,84 +94,95 @@ public class MedicoController {
         return null;
     }
 
-    public void listar() {
-        if (list.isEmpty()) {
-            System.out.println("Lista Vazia");
-        } else {
-            for (Medico m : list) {
-                System.out.println(m);
+    public Medico procurar(Long id){
+        listarTodos();
+
+        for(Medico m: list){
+            if(m.getId() == id){
+                nome.set(m.getNome());
+                email.set(m.getEmail());
+                cpf.set(m.getCpf());
+                idade.set(m.getIdade());
+                crm.set(m.getCrm());
+                telefone.set(m.getTelefone());
+
+                return m;
             }
         }
+
+        return null;
     }
 
-    public void mostrar() {
-        System.out.println("Insira o id do Medico");
-        Medico m = procurar(ler.nextLong());
 
-        if (m == null) {
-            System.out.println("Medico não encontrado");
+    public boolean alterar(){
+        Medico novo = new Medico();
+        
+        novo.setNome(nome.get());
+        novo.setEmail(email.get());
+        novo.setCpf(cpf.get());
+        novo.setIdade(idade.get());
+        novo.setCrm(crm.get());
+        novo.setTelefone(telefone.get());
+
+        if(!dao.alterar(id.get(), novo)){
+            return false;
         }
 
-        System.out.println(m);
+        
+
+        listarTodos();
+        limparDados();
+        return true;
+    }
+    
+
+    public boolean excluir(){
+        for(Medico m : list){
+            if(id.get() == m.getId()){
+
+                if(!dao.excluir(m)){
+                    return false;
+                }
+
+                listarTodos();
+                limparDados();
+
+                return true;
+            }
+        }
+
+        return false;
     }
 
-    public void alterar() {
-        System.out.println("Insira o id do Medico");
-        Medico m = procurar(ler.nextLong());
-
-        if (m == null) {
-            System.out.println("Medico não encontrado");
-            return;
-        }
-
-        if (confirmar()) {
-            preencherDados(m);
-        } else {
-            System.out.println("Operação Cancelada");
-        }
+    public LongProperty idProperty(){
+        return id;
     }
 
-    public void deletar() {
-        System.out.println("Insira o id que deseja Deletar");
-        Medico m = procurar(ler.nextLong());
-
-        if (m == null) {
-            System.out.println("Medico não Encontrado");
-            return;
-        }
-
-        if (confirmar()) {
-            list.remove(m);
-            System.out.println("Medico Removido Com Sucesso");
-        } else {
-            System.out.println("Operação cancelada");
-        }
+    public StringProperty nomeProperty(){
+        return nome;
     }
 
-    public void preencherDados(Medico m) {
-        System.out.println("Insira o nome: ");
-        m.setNome(ler.nextLine());
-
-        System.out.println("Insira o cpf: ");
-        m.setCpf(ler.nextLong());
-
-        ler.nextLine();
-
-        System.out.println("Insira o email: ");
-        m.setEmail(ler.nextLine());
-
-        System.out.println("Insira a idade: ");
-        m.setIdade(ler.nextInt());
-
-        ler.nextLine();
-
-        System.out.println("Insira o CRM: ");
-        m.setCrm(ler.nextLine());
+    public StringProperty emailProperty(){
+        return email;
     }
 
-    public Boolean confirmar() {
-        System.out.println("Deseja Prosseguir com a Operação ?");
+    public LongProperty cpfProperty(){
+        return cpf;
+    }
 
-        return ler.nextLine().equalsIgnoreCase("SIM");
+    public IntegerProperty idadeProperty(){
+        return idade;
+    }
+
+    public StringProperty crmProperty(){
+        return crm;
+    }
+
+    public StringProperty telefoneProperty(){
+        return telefone;
+    }
+
+    public ObservableList<Medico> getList(){
+        return list;
     }
 }

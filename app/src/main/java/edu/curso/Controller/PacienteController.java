@@ -1,7 +1,5 @@
 package edu.curso.Controller;
 
-import java.util.Scanner;
-
 import edu.curso.DAO.PacienteDAO;
 import edu.curso.DAO.PacienteDAOImp;
 import edu.curso.Entity.Paciente;
@@ -15,10 +13,7 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 
 public class PacienteController {
-    private long count = 0;
     private ObservableList<Paciente> list = FXCollections.observableArrayList();
-    private Scanner ler = new Scanner(System.in);
-    private int i = 0;
     private PacienteDAO dao = new PacienteDAOImp();
 
     private LongProperty id = new SimpleLongProperty();
@@ -28,7 +23,6 @@ public class PacienteController {
     private IntegerProperty idade = new SimpleIntegerProperty(0);
     private StringProperty endereco = new SimpleStringProperty("");
     private StringProperty problema = new SimpleStringProperty("");
-    private StringProperty telefone = new SimpleStringProperty("");
 
     public PacienteController(){
         pesquisarTodos();
@@ -37,17 +31,28 @@ public class PacienteController {
 
 
     public Boolean criar() {
+        if(nome.get() == null || nome.get().isBlank() ||
+        email.get() == null || email.get().isBlank() ||
+        cpf.get() <= 0 ||
+        idade.get() <= 0 ||
+        endereco.get() == null || endereco.get().isBlank() ||
+        problema.get() == null || problema.get().isBlank()){
+
+            System.out.println("Preencha todos os campos corretamente");
+            return false;
+        }
         Paciente p = new Paciente();
 
         p.setNome(nome.get());
-        p.setTelefone(telefone.get());
         p.setEmail(email.get());
         p.setCpf(cpf.get());
         p.setIdade(idade.get());
         p.setEndereco(endereco.get());
         p.setProblema(problema.get());
 
-        dao.criar(p);
+        if(dao.criar(p) == null){
+            return false;
+        }
 
         limparDados();
         pesquisarTodos();
@@ -57,7 +62,6 @@ public class PacienteController {
     public void limparDados(){
         id.set(0);
         nome.set("");
-        telefone.set("");
         email.set("");
         cpf.set(0);
         idade.set(0);
@@ -65,58 +69,85 @@ public class PacienteController {
         problema.set("");
     }
 
-    public boolean procurar() {
-        i = 0;
+    public Paciente procurar() {
+        pesquisarTodos();
+
         for(Paciente p: list){
             if(id.get() == p.getId()){
                 id.set(p.getId());
                 nome.set(p.getNome());
-                telefone.set(p.getTelefone());
                 email.set(p.getEmail());
                 cpf.set(p.getCpf());
                 idade.set(p.getIdade());
                 endereco.set(p.getEndereco());
                 problema.set(p.getProblema());
 
-                return true;
+                return p;
             }
-            i = i + 1;
         }
-        return false;
+        return null;
+    }
+
+    public Paciente procurar(Long id) {
+    pesquisarTodos();
+
+        for(Paciente p : list){
+            if(id != null && id.longValue() == p.getId()){
+                nome.set(p.getNome());
+                email.set(p.getEmail());
+                cpf.set(p.getCpf());
+                idade.set(p.getIdade());
+                endereco.set(p.getEndereco());
+                problema.set(p.getProblema());
+
+                return p;
+            }
+        }
+
+        return null;
     }
 
 
-    public void alterar() {
+    public boolean alterar() {
         Paciente novo = new Paciente();
 
         novo.setNome(nome.get());
-        novo.setTelefone(telefone.get());
         novo.setEmail(email.get());
         novo.setCpf(cpf.get());
         novo.setIdade(idade.get());
         novo.setEndereco(endereco.get());
         novo.setProblema(problema.get());
 
-        dao.atualizar(id.get() , novo);
-
-        pesquisarTodos();
-        limparDados();
-    }
-
-    public void deletar() {
-        for(Paciente p : list){
-            if(id.get() == p.getId()){
-                dao.excluir(p);
-            }
+        if(!dao.atualizar(id.get(), novo)){
+            return false;
         }
 
         pesquisarTodos();
         limparDados();
+
+        return true;
+    }
+
+    public boolean deletar() {
+        for(Paciente p : list){
+            if(id.get() == p.getId()){
+                if(!dao.excluir(p)){
+                    return false;
+                }
+
+                pesquisarTodos();
+                limparDados();
+
+                return true;
+                }
+            }
+
+        return false;
     }
 
     public void pesquisarTodos(){
         list.clear();
-        list.addAll(dao.pesquisarTodos());
+        list.setAll(dao.pesquisarTodos());
     }
 
     
@@ -146,10 +177,6 @@ public class PacienteController {
 
     public StringProperty problemaProperty(){
         return problema;
-    }
-
-    public StringProperty telefoneProperty(){
-        return telefone;
     }
 
     public ObservableList<Paciente> getLista() {
